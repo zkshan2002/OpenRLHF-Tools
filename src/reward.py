@@ -4,7 +4,7 @@ from typing import Optional, Union, Tuple, List, Dict
 
 from .data import create_loader
 from .file import path_handler, read, write
-from .model_wrappers import RewardModelWrapper, DPORewardModel
+from .models import RewardModelWrapper, DPORewardModel
 
 def _compute_rewards(reward_model: RewardModelWrapper, completions: List[Tuple[str, str]], compute_on: Optional[List[int]], batch_size: int):
     if compute_on is None:

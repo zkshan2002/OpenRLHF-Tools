@@ -2,7 +2,7 @@ from typing import List, Dict
 
 from .data import create_loader, extract_completions
 from .file import path_handler, read, write
-from .model_wrappers import ActorWrapper
+from .models import ActorWrapper
 
 def play_with_actor(actor: ActorWrapper):
     def gen(prompt: str):
@@ -31,7 +31,7 @@ def generate(actor: ActorWrapper, prompts: List[str], data_tag: str, model_tag: 
                 } for response, prev_output in zip(responses, output)]
             output_dataset.extend(output)
     
-    file = path_handler.get("generation", data_tag=data_tag, model_tag=model_tag, k=k)
+    file = path_handler.get("generation", data_tag=data_tag, model_tag=model_tag)
     write(output_dataset, file)
 
 def generate_preference(dataset: List[Dict[str, str]], data_tag: str, chosen_key: str = "chosen", rejected_key: str = "rejected"):
@@ -45,13 +45,13 @@ def generate_preference(dataset: List[Dict[str, str]], data_tag: str, chosen_key
         write(output_dataset, file)
 
 def read_generation(data_tag: str, model_tag: str, k: int = 1):
-    file = path_handler.get("generation", data_tag=data_tag, model_tag=model_tag, k=k)
+    file = path_handler.get("generation", data_tag=data_tag, model_tag=model_tag)
     dataset = read(file)
     if k == 1:
         completions = extract_completions(dataset)
         return completions
     else:
-        k_completions = []
+        k_completions: List[List[List[str]]] = []
         for i in range(k):
             completions = extract_completions(dataset, response_key=f"response-{i}")
             k_completions.append(completions)

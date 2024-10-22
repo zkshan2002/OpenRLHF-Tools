@@ -63,34 +63,28 @@ class PathHandler:
             return self._get_generation(**kwargs)
         elif mode in ["R", "ITR"]:
             return self._get_reward(mode, **kwargs)
+        elif mode == "temp":
+            return self._get_temp(mode, **kwargs)
         else:
             assert False
 
-    def _get_dataset(self, **kwargs):
-        data_tag = kwargs.pop("data_tag")
+    def _get_dataset(self, data_tag: str):
         assert isinstance(data_tag, str)
-        assert not kwargs
-
         return os.path.join(self._root, "preprocessed_datasets", f"{data_tag}.jsonl")
 
-    def _get_generation(self, **kwargs):
-        data_tag = kwargs.pop("data_tag")
+    def _get_generation(self, data_tag: str, model_tag: str):
         assert isinstance(data_tag, str)
-        model_tag = kwargs.pop("model_tag")
         assert isinstance(model_tag, str)
-        k = kwargs.pop("k", 1)
-        assert not kwargs
-
         return os.path.join(self._root, "generations", data_tag, f"{model_tag}.jsonl")
 
-    def _get_reward(self, mode: str, **kwargs):
-        data_tag = kwargs.pop("data_tag")
+    def _get_reward(self, mode: str, data_tag: str, model_tag: str):
         assert isinstance(data_tag, str)
-        model_tag = kwargs.pop("model_tag")
         assert isinstance(model_tag, str)
-        assert not kwargs
-
         return os.path.join(self._root, "rewards", mode, data_tag, model_tag)
+
+    def _get_temp(self, file_name: str):
+        assert isinstance(file_name, str)
+        return os.path.join(self._root, "temp", file_name)
 
 project_workdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 path_handler = PathHandler(os.path.join(project_workdir, ".cache"))
