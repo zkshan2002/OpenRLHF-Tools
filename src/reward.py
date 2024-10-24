@@ -111,9 +111,12 @@ def read_dpo_rewards(data_tag: str, model_tag: str, compute_on: Optional[List[in
         output_ISR = []
         for i in range(k):
             ITR, ISR = _read_dpo_rewards(os.path.join(workdir, f"{i}"), compute_on)
-            output_ITR.append(ITR)
+            if return_ITR:
+                output_ITR.append(ITR)
             output_ISR.append(ISR)
         output_ISR = np.stack(output_ISR, axis=-1)
+        if return_ITR:
+            output_ITR = [list(item) for item in zip(*output_ITR)]
     if return_ITR:
         return output_ISR, output_ITR
     else:
